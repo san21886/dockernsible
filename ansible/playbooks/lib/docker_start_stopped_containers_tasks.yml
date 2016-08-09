@@ -1,0 +1,6 @@
+---
+
+- name: "Start all exited containers on dockerhosts."
+  shell: docker -H tcp://0.0.0.0:2375 start $(docker -H tcp://0.0.0.0:2375 ps -a -q -f status=exited)
+  register: container_start_status
+- debug: msg="Conatiner start status:{{container_start_status}}"

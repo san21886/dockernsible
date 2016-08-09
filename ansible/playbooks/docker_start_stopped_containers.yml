@@ -1,0 +1,5 @@
+---
+
+- hosts: dockerhosts
+  tasks:
+    - include: lib/docker_start_stopped_containers_tasks.yml

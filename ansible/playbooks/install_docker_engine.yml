@@ -1,0 +1,34 @@
+
+---
+
+- hosts: dockerhosts
+  #become_user: root
+  tasks:
+    - name: "Get Kernel version"
+      shell: uname -r|cut -d'-' -f1 | sed -E 's/\.//g'
+      args:
+        executable: /bin/bash
+      register: kernel_version
+    - debug: var=kernel_version
+
+    - name: "Fail if kernel version is not satisfied."
+      fail: msg="Kernel version {{kernel_version.stdout}} is not valid. Requires greater than 3.10.0"
+      when: kernel_version.stdout <= "3100" 
+
+    - include: lib/ubuntu_install_docker_engine_tasks.yml
+    - include: lib/redhat_install_docker_engine_tasks.yml
+    - include: lib/install_docker_machine_tasks.yml
+    - include: lib/configure_docker_engine_tasks.yml
+    - include: lib/restart_docker_tasks.yml
+
+- hosts: etcdhosts
+  tasks:
+    - include: config/common_vars.yml
+    - include: lib/install_etcd_tasks.yml
+      when: etcd_ip is defined
+
+- include: start_etcd.yml
+    
+    #- debug: msg="OS:{{ansible_distribution}}"
+    #- debug: msg="OS Version:{{ansible_distribution_version}}"
+    #- debug: msg="OS Major Version:{{ansible_distribution_major_version}}"

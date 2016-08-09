@@ -1,0 +1,6 @@
+---
+
+- set_fact: etcd_port="2379"
+- set_fact: etcd_version="2.3.1"
+- set_fact: etcd_pkg_name="etcd-v2.3.1-linux-amd64"
+- set_fact: etcd_data_dir={{lookup('env','HOME')}}/etcd.data/

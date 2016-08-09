@@ -1,0 +1,20 @@
+#http://chunqi.li/2015/11/09/docker-multi-host-networking/
+---
+
+- hosts: etcdhosts
+  tasks:
+    - include: config/etcd_vars.yml
+    - include: config/common_vars.yml
+
+    - name: "Check if ETCD is running." 
+      shell: lsof -i :{{etcd_port}}
+      register: is_etcd_running
+      ignore_errors: yes
+    - debug: msg="ETCD  status:{{is_etcd_running}}" 
+
+    - name: "Starting ETCD if not running." 
+      shell: cd {{lookup('env','HOME')}}/{{etcd_pkg_name}} && nohup ./etcd --data-dir={{etcd_data_dir}} --listen-client-urls "http://0.0.0.0:{{etcd_port}}" --advertise-client-urls "http://{{etcd_ip}}:{{etcd_port}}" 2>&1 >>etcd.out &
+      register: etcd_start_status
+      any_errors_fatal: true
+      when: is_etcd_running.stdout==""
+    - debug: msg="ETCD start status:{{etcd_start_status}}" 

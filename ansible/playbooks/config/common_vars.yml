@@ -1,0 +1,9 @@
+---
+
+- set_fact: host_ip={{ansible_eth1.get('ipv4').get("address")}}
+- set_fact: etcd_ip={{ groups['etcdhosts'][0] }}
+  when: groups['etcdhosts'] is defined
+- set_fact: swarm_ip={{ groups['swarmhosts'][0] }}
+  when: groups['swarmhosts'] is defined
+- set_fact: docker_port=2375
+- set_fact: swarm_port=8333

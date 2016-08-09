@@ -1,0 +1,29 @@
+version: 0.1
+log:
+  level: debug
+  formatter: json #text,json,logstash
+  fields:
+    service: registry
+storage:
+  s3:
+    accesskey: AKIAJMDZUP5QSFRO32EQ
+    secretkey: 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
+    region: us-east-1
+    regionendpoint: https://s3.amazonaws.com/
+    bucket: drpm-docker-registry
+    encrypt: true
+    secure: true
+    v4auth: true
+    chunksize: 5242880
+    rootdirectory: /drpm/docker/releases/
+  delete:
+    enabled: true
+http:
+  addr: :5000
+  headers:
+    X-Content-Type-Options: [nosniff]
+health:
+  storagedriver:
+    enabled: true
+    interval: 10s
+    threshold: 3

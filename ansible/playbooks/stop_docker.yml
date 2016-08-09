@@ -1,0 +1,6 @@
+---
+
+- hosts: dockerhosts
+  become: true
+  tasks:
+    - include: lib/stop_docker_tasks.yml

@@ -1,0 +1,6 @@
+---
+
+- name: "Remove stopped containers on dockerhosts."
+  shell: docker -H tcp://0.0.0.0:2375 rm $(docker -H tcp://0.0.0.0:2375 ps -a -q -f status=exited)
+  register: container_remove_status
+- debug: msg="Conatiner remove status:{{container_remove_status}}"

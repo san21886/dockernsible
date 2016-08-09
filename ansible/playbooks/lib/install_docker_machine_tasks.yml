@@ -1,0 +1,10 @@
+
+---
+
+
+- name: "Configure docker machine."
+  become: true
+  shell: curl -L https://github.com/docker/machine/releases/download/v0.7.0/docker-machine-`uname -s`-`uname -m` > /usr/local/bin/docker-machine && chmod +x /usr/local/bin/docker-machine
+  register: docker_machine_status
+  any_errors_fatal: true
+- debug: var=docker_machine_status

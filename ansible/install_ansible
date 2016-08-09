@@ -1,0 +1,73 @@
+#!/bin/bash
+
+#################Requisite######################
+#Install lsb_release
+################################################
+
+OS=$(lsb_release -i|cut -d':' -f2|sed 's|\s||g')
+OS_VERSION=$(lsb_release -r|cut -d':' -f2|sed 's|\s||g')
+
+enable_epel(){
+    if [[ -z $(yum repolist|grep -i 'epel Extra Packages') ]];then
+        if [[ -z $(echo $OS_VERSION|grep '^7') ]];then
+            wget http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-7.noarch.rpm
+            sudo rpm -ivh epel-release-7-7.noarch.rpm
+        elif [[ -z $(echo $OS_VERSION|grep '^6') ]];then
+            wget http://download.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+            sudo rpm -ivh epel-release-6-8.noarch.rpm
+        fi
+    fi
+}
+
+configure_ssh(){
+    if [[ ! -f $HOME/.ssh/id_rsa ]];then
+        ssh-keygen -t rsa -N "" -f $HOME/.ssh/id_rsa
+    fi
+
+    if [[ ! -f $HOME/.ssh/authorized_keys ]];then
+        touch $HOME/.ssh/authorized_keys
+    fi
+
+    cat $HOME/.ssh/id_rsa.pub >>$HOME/.ssh/authorized_keys
+}
+
+install_ansible(){
+    if [[ $OS == "Ubuntu" ]];then
+        if [[ -z $(dpkg -l|grep 'ansible') ]];then
+            sudo apt-add-repository ppa:ansible/ansible -y
+            sudo apt-get update && sudo apt-get install ansible -y
+            if [[ $? != 0 ]];then
+                echo "Ansible installation failed."
+            else
+                echo "Ansible installation completed.."
+            fi
+        else
+            echo "Ansible is already installed."
+        fi
+    elif [[ $OS == "RedHatEnterpriseServer" ]];then
+        if [[ -z $(rpm -a|grep 'ansible') ]];then
+            enable_epel
+            sudo yum install ansible -y
+            if [[ $? != 0 ]];then
+                echo "Ansible installation failed."
+            else
+                echo "Ansible installation completed.."
+            fi
+        fi
+    fi
+    configure_ssh
+}
+
+if [[ $OS == "Ubuntu" ]];then
+    if [[ $OS_VERSION == "14.04" ]];then
+        install_ansible
+    else
+        echo "$OS-$OS_VERSION is not compatible."
+    fi
+elif [[ $OS == "RedHatEnterpriseServer" ]];then
+    if [[ $OS_VERSION == "6.5" ]];then
+       install_ansible
+    else
+        echo "$OS-$OS_VERSION is not compatible."
+    fi
+fi

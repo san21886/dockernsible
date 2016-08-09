@@ -1,0 +1,6 @@
+---
+
+- hosts: dockerhosts
+  become: true
+  tasks:
+    - include: lib/restart_docker_tasks.yml

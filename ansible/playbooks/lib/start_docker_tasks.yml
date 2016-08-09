@@ -1,0 +1,8 @@
+---
+
+- name: "Start docker daemon."
+  become: true
+  shell: start docker
+  register: start_status
+
+- debug: msg="starts status:{{start_status}}"

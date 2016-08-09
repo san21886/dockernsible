@@ -1,0 +1,15 @@
+---
+
+- hosts: etcdhosts
+  tasks:
+    - include: config/etcd_vars.yml
+
+    - name: "Stop etcd."
+      shell: kill $(pgrep etcd)
+      register: etcd_stop_status
+    - debug: msg="ETCD stop status:{{etcd_stop_status}}"
+
+    - name: "Check if etcd stopped successfully."
+      shell: lsof -i :{{etcd_port}}
+      register: cmd_out
+      failed_when: cmd_out.stdout!=""

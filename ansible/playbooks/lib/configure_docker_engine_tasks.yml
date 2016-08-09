@@ -1,0 +1,25 @@
+---
+
+- include: config/common_vars.yml
+- include: config/etcd_vars.yml
+- include: config/docker_registry_vars.yml
+
+- name: "Set docker daemon configuration file path."
+  set_fact: remote_file_path=/etc/default/docker
+
+- name: "Ensure file exists:{{remote_file_path}}"
+  become: true
+  file: path="{{remote_file_path}}" state=touch
+
+- stat: path="{{remote_file_path}}"
+  register: file_path
+
+- set_fact: file_content="DOCKER_OPTS=\"-D --insecure-registry {{docker_registry_domain}} -H tcp://0.0.0.0:{{docker_port}} -H unix:///var/run/docker.sock --cluster-advertise={{host_ip}}:2375\""
+  when: etcd_ip is not defined
+
+- set_fact: file_content="DOCKER_OPTS=\"-D --insecure-registry {{docker_registry_domain}} -H tcp://0.0.0.0:{{docker_port}} -H unix:///var/run/docker.sock  --cluster-store=etcd://{{etcd_ip}}:2379 --cluster-advertise={{host_ip}}:2375\""
+  when: etcd_ip is defined
+
+- copy: content="{{file_content}}" dest="{{remote_file_path}}"
+  become: true
+  when: file_path.stat.exists == true

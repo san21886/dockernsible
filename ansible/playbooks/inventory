@@ -1,0 +1,9 @@
+[dockerhosts]
+192.168.56.101
+192.168.56.102
+[etcdhosts]
+192.168.56.101
+[swarmhosts]
+192.168.56.101
+[dockerregistryhost]
+192.168.56.101

@@ -1,0 +1,19 @@
+---
+
+- include: config/etcd_vars.yml
+
+- name: "Download ETCD from DataRPM repo."
+  get_url: url="https://s3.amazonaws.com/drpm-releases/etcd/{{etcd_version}}/{{etcd_pkg_name}}.tar.gz" dest={{ lookup('env','HOME') }}
+  register: download_status
+  any_errors_fatal: true
+- debug: msg="ETCD download status:{{ download_status }}"
+
+- stat: path="{{lookup('env','HOME')}}/{{etcd_pkg_name}}"
+  register: file_stat
+
+- name: "Uncompress the downloaded package."
+  unarchive: src={{ download_status.get("dest") }} dest={{lookup('env','HOME')}}
+  register: unarchive_status
+  any_errors_fatal: true
+  when: file_stat.stat.exists == false
+- debug: msg="ETCD unarchive status:{{ unarchive_status }}"

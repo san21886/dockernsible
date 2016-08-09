@@ -1,0 +1,4 @@
+---
+
+- set_fact: docker_registry_domain="registry.docker.drpm.io"
+- set_fact: docker_registry_port="5000"

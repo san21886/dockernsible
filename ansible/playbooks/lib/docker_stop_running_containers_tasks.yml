@@ -1,0 +1,6 @@
+---
+
+- name: "Stop all running containers on dockerhosts."
+  shell: docker -H tcp://0.0.0.0:2375 stop $(docker -H tcp://0.0.0.0:2375 ps -a -q -f status=running)
+  register: container_stop_status
+- debug: msg="Conatiner stop status:{{container_stop_status}}"

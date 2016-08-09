@@ -1,0 +1,8 @@
+---
+
+- name: "Stop docker daemon."
+  become: true
+  shell: stop docker
+  register: stop_status
+
+- debug: msg="docker stop status:{{stop_status}}"

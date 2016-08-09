@@ -1,0 +1,31 @@
+
+---
+
+- name: "Yum Update"
+  yum: update_cache=yes state=latest
+  become: true
+  register: yum_update_status
+  any_errors_fatal: true
+  when: (ansible_distribution=="RedHat" or ansible_distribution=="CentOS") and (ansible_distribution_major_verison == "7" )
+- debug: var=yum_update_status
+
+- name: "Add yum repository for docker."
+  become: true
+  yum_repository:
+    name: Docker Repository
+    baseurl: https://yum.dockerproject.org/repo/main/centos/7
+    gpgcheck: 1
+    gpgkey: https://yum.dockerproject.org/gpg
+    ebabled: 1
+  register: yum_repo_add_status
+  any_errors_fatal: true
+  when: (ansible_distribution=="RedHat" or ansible_distribution=="CentOS") and (ansible_distribution_major_verison == "7" )
+- debug: var=yum_repo_add_status
+
+- name: "Install docker-engine."
+  become: true
+  yum: name=docker-engine state=latest
+  any_errors_fatal: true
+  register: docker_engine_install_status
+  when: (ansible_distribution=="RedHat" or ansible_distribution=="CentOS") and (ansible_distribution_major_verison == "7" )
+- debug: var=docker_engine_install_status

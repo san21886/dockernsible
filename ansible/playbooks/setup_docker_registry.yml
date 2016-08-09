@@ -1,0 +1,10 @@
+---
+
+- hosts: dockerregistryhost
+  tasks:
+    - include: config/docker_registry_vars.yml
+    - name: "Start docker registry."
+      #become: true
+      shell: docker -H tcp://0.0.0.0:2375  run -d -p 80:{{docker_registry_port}} --name drpmdockerregistry -v {{lookup('env','PWD')}}/config/docker_registry_config.yml:/etc/docker/registry/config.yml registry:2
+      register: docker_registry_start_status
+    - debug: var=docker_registry_start_status

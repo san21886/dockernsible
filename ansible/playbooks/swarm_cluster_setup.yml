@@ -1,0 +1,18 @@
+#http://blog.scottlowe.org/2015/04/19/running-etcd-backed-docker-swarm-cluster/
+---
+
+- hosts: dockerhosts
+  become: true
+  tasks:
+    - include: config/common_vars.yml
+    - include: config/etcd_vars.yml
+    - name: "Start swarm container on all docker hosts."
+      shell: docker run -d swarm join --addr={{host_ip}}:{{docker_port}} etcd://{{etcd_ip}}:{{etcd_port}}/swarm
+
+- hosts: swarmhosts
+  become: true
+  tasks:
+    - include: config/common_vars.yml
+    - include: config/etcd_vars.yml
+    - name: "Start swarm manager container on all swarm manager host."
+      shell: docker run -d -p {{swarm_port}}:{{docker_port}} swarm manage etcd://{{etcd_ip}}:{{etcd_port}}/swarm
