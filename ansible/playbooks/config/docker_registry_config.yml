@@ -6,8 +6,8 @@ log:
     service: registry
 storage:
   s3:
-    accesskey: AKIAJMDZUP5QSFRO32EQ
-    secretkey: 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
+    accesskey: 
+    secretkey: 
     region: us-east-1
     regionendpoint: https://s3.amazonaws.com/
     bucket: drpm-docker-registry
