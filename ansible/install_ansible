@@ -59,7 +59,7 @@ install_ansible(){
 }
 
 if [[ $OS == "Ubuntu" ]];then
-    if [[ $OS_VERSION == "14.04" ]];then
+    if [[ $OS_VERSION == "14.04" ]] || [[ $OS_VERSION == "16.04" ]];then
         install_ansible
     else
         echo "$OS-$OS_VERSION is not compatible."

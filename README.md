@@ -21,3 +21,8 @@
     ansible-playbook docker_start_stopped_containers.yml -i inventory
 10. Remove all exited non swarm containers
     ansible-playbook docker_remove_stopped_containers.yml -i inventory
+
+Install jenkins:
+1. Update inventory file: ansible/playbooks/inventory for hosts: [jenkinshosts]
+2. Install docker-ce: ansible-playbook -i inventory install_docker_ce.yml
+	- Tested on Ubuntu 16.04 LTS

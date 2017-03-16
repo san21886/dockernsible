@@ -1,7 +1,7 @@
 ---
 
-- hosts: dockerhosts
-  become: true
+- hosts: jenkinshosts
   tasks:
-    - include: stop_docker_tasks.yml
+    - include: config/common_vars.yml
+    #- include: stop_docker_tasks.yml
     #- include: start_docker_tasks.yml 

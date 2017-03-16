@@ -1,0 +1,63 @@
+
+---
+
+- include: config/common_vars.yml
+- name: "Ubuntu: Install Prerequisites."
+  become: true
+  apt:
+    name: "{{item}}"
+    state: installed
+    update_cache: yes #apt-get update
+  with_items:
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - software-properties-common
+  register: ubuntu_prereq_status
+  when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
+- name: "Ubuntu: Add docker GPG Key"
+  shell: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  register: ubuntu_docker_key_status
+  when: ubuntu_prereq_status.msg == "All items completed"
+- name: "Ubuntu: Add repository"
+  shell: sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+  register: ubuntu_add_docker_repo_status
+  when: ubuntu_docker_key_status.stdout == "OK"
+- name: "Ubuntu: Apt update"
+  become: true
+  apt:
+    update_cache: yes #apt-get update
+  register: ubuntu_apt_update_status
+  when: ubuntu_add_docker_repo_status.rc == 0
+- name: "Ubuntu: Install docker-ce={{ubuntu_docker_version}}"
+  become: true
+  apt:
+    name: docker-ce={{ubuntu_docker_version}}
+    state: installed
+  register: ubuntu_docker_ce_install_status
+  when: ubuntu_apt_update_status.cache_updated == true
+- debug:
+    msg: "{{ubuntu_docker_ce_install_status}}"
+- name: "CentOS: Install Prerequisites."
+  become: true
+  yum:
+    name: yum-utils
+    state: installed
+    update_cache: yes 
+  register: centos_prereq_status
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+- name: "CentOS: Add repository"
+  shell: sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+  register: centos_add_docker_repo_status
+  when:  centos_prereq_status.msg is defined and centos_prereq_status.msg == "All items completed"
+- name: "Centos: Package index."
+  shell: sudo yum makecache fast
+  register: centos_package_index_status
+  when:  centos_add_docker_repo_status.rc is defined and centos_add_docker_repo_status.rc == 0
+- name: "Centos: Install docker-ce"
+  become: true
+  yum:
+    name: docker-ce
+    state: installed
+  register: centos_docker_ce_install_status
+  when:  centos_package_index_status.rc is defined and centos_package_index_status.rc == 0
