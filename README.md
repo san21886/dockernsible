@@ -1,3 +1,4 @@
+
 1. Install ansible using ansible/install_ansible
 2. Configure ansible inventory file: ansible/playbooks/inventory
 3. Install docker engine on all nodes using playbook: ansible/playbooks/install_docker_engine.yml
@@ -22,7 +23,7 @@
 10. Remove all exited non swarm containers
     ansible-playbook docker_remove_stopped_containers.yml -i inventory
 
-Install jenkins:
+Install jenkins: Update inpregress ....
 1. Update inventory file: ansible/playbooks/inventory for hosts: [jenkinshosts]
 2. Install docker-ce: ansible-playbook -i inventory install_docker_ce.yml
 	- Tested on Ubuntu 16.04 LTS
