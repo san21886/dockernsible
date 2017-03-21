@@ -1,0 +1,4 @@
+---
+
+- include: ../config/docker_registry_vars.yml
+- name: "Start docker registry"

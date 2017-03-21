@@ -1,0 +1,5 @@
+---
+
+- hosts: jenkinshosts
+  tasks:
+    - include: lib/start_docker_ce.yml

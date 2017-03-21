@@ -1,0 +1,25 @@
+---
+
+- name: "Ubuntu: Copy docker.service file"
+  become: true
+  copy:
+    src: ../config/docker.service
+    dest: /lib/systemd/system/docker.service
+- name: "Reload docker.service config"
+  become: true
+  shell: systemctl daemon-reload
+- name: "Ubuntu: Check if daemon.json exists"
+  become: true
+  stat:
+    path: /etc/docker/daemon.json
+  register: file_stat
+- name: "Ubuntu: backup existing daemon.json."
+  become: true
+  shell: cp /etc/docker/daemon.json /etc/docker/daemon.json-{{ansible_date_time.epoch}}
+  register: backup
+  when: file_stat.stat.exists == true
+- name: "Ubuntu: Create new daemon.json."
+  become: true
+  copy:
+    src: ../config/docker_daemon.json
+    dest: /etc/docker/daemon.json

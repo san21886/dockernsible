@@ -1,0 +1,7 @@
+---
+
+- name: "Printlog docker-ce"
+  shell: journalctl -u docker.service
+  register: logs
+- debug:
+    msg: "{{logs}}"

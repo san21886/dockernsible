@@ -15,20 +15,32 @@
     - software-properties-common
   register: ubuntu_prereq_status
   when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '16.04'
+- debug:
+    msg: "ubuntu_prereq_status={{ubuntu_prereq_status}}"
+
 - name: "Ubuntu: Add docker GPG Key"
   shell: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
   register: ubuntu_docker_key_status
   when: ubuntu_prereq_status.msg == "All items completed"
+- debug:
+    msg: "ubuntu_docker_key_status={{ubuntu_docker_key_status}}"
+
 - name: "Ubuntu: Add repository"
   shell: sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
   register: ubuntu_add_docker_repo_status
   when: ubuntu_docker_key_status.stdout == "OK"
+- debug:
+    msg: "ubuntu_add_docker_repo_status={{ubuntu_add_docker_repo_status}}"
+
 - name: "Ubuntu: Apt update"
   become: true
   apt:
     update_cache: yes #apt-get update
   register: ubuntu_apt_update_status
   when: ubuntu_add_docker_repo_status.rc == 0
+- debug:
+    msg: "ubuntu_apt_update_status={{ubuntu_apt_update_status}}"
+
 - name: "Ubuntu: Install docker-ce={{ubuntu_docker_version}}"
   become: true
   apt:
@@ -37,7 +49,11 @@
   register: ubuntu_docker_ce_install_status
   when: ubuntu_apt_update_status.cache_updated == true
 - debug:
-    msg: "{{ubuntu_docker_ce_install_status}}"
+    msg: "ubuntu_docker_ce_install_status={{ubuntu_docker_ce_install_status}}"
+
+- include: configure_docker_ce.yml
+  when: ubuntu_docker_ce_install_status.cache_updated == true
+
 - name: "CentOS: Install Prerequisites."
   become: true
   yum:

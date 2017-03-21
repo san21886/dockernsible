@@ -1,0 +1,5 @@
+---
+
+- name: "Start docker-ce"
+  become: true
+  shell: systemctl start docker
