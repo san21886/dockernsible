@@ -1,0 +1,15 @@
+---
+
+ 
+- include: ../config/common_vars.yml
+- name: "Generate auth."
+  become: true
+  shell: docker -H tcp://{{registry_docker_ip}}:{{docker_port}} run --entrypoint htpasswd registry:2 -Bbn {{user}} {{password}}
+  register: auth
+  when: user is defined and password is defined
+
+- debug:
+    msg: "{{auth}}"
+
+- fail: msg="Did not pass user and password as argument. Set these variables using option --extra-vars "user=test password=testpasswrod" for ansible-playbook" 
+  when: user is not defined or password is not defined

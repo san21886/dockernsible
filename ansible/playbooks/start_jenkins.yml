@@ -1,0 +1,5 @@
+---
+
+- hosts: jenkinshosts
+  tasks:
+    - include: lib/jenkins/start.yml

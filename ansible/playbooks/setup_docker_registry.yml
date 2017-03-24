@@ -2,9 +2,20 @@
 
 - hosts: dockerregistryhost
   tasks:
+    - include: config/common_vars.yml
     - include: config/docker_registry_vars.yml
     - name: "Start docker registry."
-      #become: true
-      shell: docker -H tcp://0.0.0.0:2375  run -d -p 80:{{docker_registry_port}} --name drpmdockerregistry -v {{lookup('env','PWD')}}/config/docker_registry_config.yml:/etc/docker/registry/config.yml registry:2
+      become: true
+      shell: >
+        docker -H tcp://"{{registry_docker_ip}}":"{{docker_port}}"  run -d -p "{{docker_registry_port}}":"{{docker_registry_port}}" --name drpmdockerregistry
+        -v "{{lookup('env','PWD')}}"/config/docker_registry_config.yml:/etc/docker/registry/config.yml
+        -v "{{lookup('env','PWD')}}"/config/auth:/auth
+        -e REGISTRY_AUTH=htpasswd
+        -e REGISTRY_AUTH_HTPASSWD_REALM="Registry Realm"
+        -e REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd
+        -v "{{lookup('env','PWD')}}"/config/certs:/certs
+        -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/server.crt
+        -e REGISTRY_HTTP_TLS_KEY=/certs/server.key
+        registry:2
       register: docker_registry_start_status
     - debug: var=docker_registry_start_status

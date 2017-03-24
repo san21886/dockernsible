@@ -8,3 +8,7 @@
 - set_fact: docker_port=2375
 - set_fact: swarm_port=8333
 - set_fact: ubuntu_docker_version=17.03.0~ce-0~ubuntu-xenial
+- set_fact: docker_data_dir=/ebs1/docker-data
+- set_fact: registry_docker_ip=127.0.0.1
+- set_fact: jenkins_home=/ebs1/jenkins/
+- set_fact: jenkins_version=2.32.3

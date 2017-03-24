@@ -1,0 +1,9 @@
+---
+
+- include: ../../config/common_vars.yml
+- include: ../../config/docker_registry_vars.yml
+- name: "Start Jenkins from DataRPM private repository."
+  become: true
+  shell: docker -H tcp://127.0.0.1:2375 run -d --name jenkins -p 8080:8080 -p 50000:50000 -v {{jenkins_home}}:/var/jenkins_home {{docker_registry_domain}}:5000/jenkins:{{jenkins_version}}
+  register: start_status
+- debug: var={{start_status}}

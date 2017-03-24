@@ -23,7 +23,12 @@
 10. Remove all exited non swarm containers
     ansible-playbook docker_remove_stopped_containers.yml -i inventory
 
+For docker-ce:
+1. install docker-ce: ansible-playbook -i inventory install_docker_ce.yml 
+	- Tested on Ubuntu 16.04 LTS
+2. Start docker-ce: ansible-playbook -i inventory start_jenkins_docker.yml
+3. Stop docker-ce: ansible-playbook -i inventory stop_jenkins_docker.yml
+4. Generate user auth for docker private registry: ansible-playbook -i inventory generate_docker_registry_auth.yml --extra-vars "user=santosh password=password"
+
 Install jenkins: Update inpregress ....
 1. Update inventory file: ansible/playbooks/inventory for hosts: [jenkinshosts]
-2. Install docker-ce: ansible-playbook -i inventory install_docker_ce.yml
-	- Tested on Ubuntu 16.04 LTS

@@ -1,0 +1,7 @@
+---
+
+- hosts: jenkinshosts
+  tasks:
+    - set_fact: user={{user}} #from cmd argument
+    - set_fact: password={{password}} #from cmd argument
+    - include: lib/registry_auth.yml

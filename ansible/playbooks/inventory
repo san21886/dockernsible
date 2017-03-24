@@ -6,6 +6,6 @@
 [swarmhosts]
 192.168.56.101
 [dockerregistryhost]
-192.168.56.101
+10.11.7.4
 [jenkinshosts]
 10.11.7.4

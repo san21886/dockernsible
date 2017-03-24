@@ -2,7 +2,3 @@
 
 - set_fact: docker_registry_domain="dockereg.datarpm.com"
 - set_fact: docker_registry_port="5000"
-- set_fact: docker_registry_tls_cert_path=/certs/server.crt
-- set_fact: docker_registry_tls_key_path=/certs/server.key
-- set_fact: registry_auth="htpasswd"
-- set_fact: registry_auth_htpasswd_realm="Registry Realm"

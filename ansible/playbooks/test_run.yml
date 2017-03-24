@@ -2,6 +2,6 @@
 
 - hosts: jenkinshosts
   tasks:
-    - include: config/common_vars.yml
+    - include: lib/configure_docker_ce.yml
     #- include: stop_docker_tasks.yml
     #- include: start_docker_tasks.yml 
